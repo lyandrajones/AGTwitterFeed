@@ -57,3 +57,6 @@ Ward
 
 ## Run Instructions
 
+1. Download and extract files to chosen directory
+2. Go to the chosen directory in command line
+3. To run the application type: RunTwitter user.txt tweet.txt
