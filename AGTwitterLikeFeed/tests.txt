@@ -1,0 +1,16 @@
+Tests:
+
+1. Fail to upload one or both files
+	Output: Appropriate error message displayed
+2. Given .txt files
+	Change: Need to check that users have people they are following before calling list.
+	Ouput: as expected
+3. Adding user without " follows "
+	Change: need to check if there is an index 1 for nameArray
+	Output: add user on their own
+4. Empty user file
+	Ouput: does not add any users
+5. Adding "> " to tweet text
+	Output: cuts off the tweet after "> "
+6. Tweet from user who is not in user file at all
+	Ouput: tweet not displayed
