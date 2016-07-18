@@ -21,9 +21,8 @@ namespace AGTwitterLikeFeed
             //Create list that will be populated from text file
             List<Tweet> tweets = new List<Tweet>();
 
-
-            String line;
             StreamReader sr = new StreamReader(file);
+            String line;
 
             //Read the first line of text
             line = sr.ReadLine();
@@ -35,20 +34,23 @@ namespace AGTwitterLikeFeed
                 string[] tweetSeparators = new string[] { "> " };
                 string[] tweetArray = line.Split(tweetSeparators, StringSplitOptions.None);
 
-                //create the tweet and parse through the values - index 0 will always be the user and 1 the text (provided there are no "> " in the message.
-
-                string tweetText;
-                if (tweetArray[1].Length > 140)
+                // If the tweet line contains text
+                if (tweetArray.Length > 1)
                 {
-                    tweetText = tweetArray[1].Substring(0, 140);
-                }
-                else
-                {
-                    tweetText = tweetArray[1];
-                }
+                    string tweetText;
+                    if (tweetArray[1].Length > 140)
+                    {
+                        tweetText = tweetArray[1].Substring(0, 140);
+                    }
+                    else
+                    {
+                        tweetText = tweetArray[1];
+                    }
 
+                    //create the tweet for the user
                     Tweet tweet = new Tweet(tweetArray[0], tweetText);
-                tweets.Add(tweet);
+                    tweets.Add(tweet);
+                }
 
                 //Read the next line
                 line = sr.ReadLine();

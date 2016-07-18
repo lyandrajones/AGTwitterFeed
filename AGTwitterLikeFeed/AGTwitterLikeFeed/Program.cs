@@ -12,10 +12,8 @@ namespace AGTwitterLikeFeed
     {
         static void Main(string[] args)
         {
-            //Console.WriteLine("Twitter Feeds");
-
-
-            #region Validations for file inputs
+            // Validate number of parameters which contain file names and locations
+            // --------------------------------------------------------------------
 
             if (args == null || args.Length < 2)
             {
@@ -23,18 +21,20 @@ namespace AGTwitterLikeFeed
                 return;
             }
 
-            #endregion
-
             try
             {
-                //-------------------------------------LOADING DATA FROM FILES------------------------------------------------------------------------------------------
+                // Load user and tweet data from files into lists
+                // ----------------------------------------------
+
                 LoadUsers loadUsers = new LoadUsers(args[0]);
                 List<User> users = loadUsers.GetUsers();
 
                 LoadTweets loadTweets = new LoadTweets(args[1]);
                 List<Tweet> tweets = loadTweets.GetTweets();
 
-                //-------------------------------------DISPLAY DATA--------------------------------------------------------------------------------------
+
+                // Output Twitter feed for all users to Console
+                // --------------------------------------------
 
                 var indent = new string(' ', 8);
 
@@ -43,27 +43,24 @@ namespace AGTwitterLikeFeed
                     Console.WriteLine(currentUser.Name);
                     foreach (Tweet currentTweet in tweets)
                     {
+                        // If the tweet is by the current user or someone the user is following, output it to the console.
+
                         if (currentTweet.TweetedBy == currentUser.Name || (currentUser.Following != null && currentUser.Following.Contains(currentTweet.TweetedBy)))
                         {
-                            Console.WriteLine(indent + "@" + currentTweet.TweetedBy + ": " + currentTweet.Text); //This is assuming that the message. in the the instructions considered the "." to already be in the message.
+                            Console.WriteLine(indent + "@" + currentTweet.TweetedBy + ": " + currentTweet.Text); 
                         }
                     }
                 }
 
-
-
-
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception: " + e.Message);
+                Console.WriteLine(" Program ended abnormally. Exception: " + e.Message);
             }
             finally
             {
-                Console.WriteLine("Executing finally block.");
             }
 
         }
-
     }
 }

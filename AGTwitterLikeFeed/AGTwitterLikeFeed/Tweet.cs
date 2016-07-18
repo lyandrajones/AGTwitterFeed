@@ -13,11 +13,10 @@ namespace AGTwitterLikeFeed
             TweetedBy = userName;
             Text = text;
         }
-
-
+        public string TweetedBy { get; set; }
 
         public string Text { get; set; }
 
-        public string TweetedBy { get; set; }
+
     }
 }

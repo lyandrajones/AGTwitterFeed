@@ -14,6 +14,9 @@ namespace AGTwitterLikeFeed
 
         string file;
 
+        // Create list that will be populated from text file
+        List<User> users = new List<User>();
+        
         public LoadUsers(string fileName)
         {
             file = fileName;
@@ -21,82 +24,77 @@ namespace AGTwitterLikeFeed
 
         public List<User> GetUsers()
         {
-            //Create list that will be populated from text file
-            List<User> users = new List<User>();
-
-            String line;
             StreamReader sr = new StreamReader(file);
+            String line;
 
-            //Read the first line of text
+            // Read the first line of text
             line = sr.ReadLine();
 
-            //Seperators -> to be used below
-            string[] stringSeparators = new string[] { " follows " };
+            // Seperators that are used below
+            string[] followsSeparator = new string[] { " follows " };
             string[] commaSeparators = new string[] { ", " };
 
-            //Continue to read until you reach end of file
+            // Loop through each line in user file
             while (line != null)
             {
-                //Create user to track who is the main user in the line and add to who they are following
-                User currentUser = new User();
+                // Seperate the user and who they may be following
+                string[] nameArray = line.Split(followsSeparator, StringSplitOptions.None);
 
-                string[] nameArray = line.Split(stringSeparators, StringSplitOptions.None);
-                
-                //First item in array will always be single user                
-                //Check if they are already in the list
-                if (!users.Any(u => u.Name == nameArray[0]))
+                // Call common method to add the user to the list if they're not already in the list
+                AddUser(nameArray[0]);
+
+                // If the user is following anyone
+                if (nameArray.Length > 1)
                 {
-                    User tempUser = new User();
-                    tempUser.Name = nameArray[0];
-                    //If not, then add them.
-                    users.Add(tempUser);
+                    // Seperate who is being followed
+                    string[] followedUsers = nameArray[1].Split(commaSeparators, StringSplitOptions.None);
+
+                    // Loop through the users being followed
+                    foreach (string userName in followedUsers)
+                    {
+                        // Call common method to add the user to the list of users if they're not already in the list
+                        AddUser(userName);
+
+                        // Find the current user in the list
+                        User currentUser = new User();
+                        currentUser = users.Where(u => u.Name == nameArray[0]).First();
+
+                        // If a list of people being followed does not yet exist for this user, create one
+                        if (currentUser.Following == null)
+                        {
+                            currentUser.Following = new List<string>();
+                        }
+
+                        // If the user being followed is not yet in the following list, add them to the list
+                        if (!currentUser.Following.Contains(userName))
+                        {
+                            currentUser.Following.Add(userName);
+                        }
+                    }
                 }
 
-
-                //Second item in array will always be one or more users -> need to split on ','
-                string[] potentialNewUsers = nameArray[1].Split(commaSeparators, StringSplitOptions.None);
-
-                //loop through other users
-                foreach (string userName in potentialNewUsers)
-                {
-                    //Check if they are already in the list
-                    if (!users.Any(u => u.Name == userName))
-                    {
-                        //If not, then add them.
-                        User tempUser = new User();
-                        tempUser.Name = userName;
-                        users.Add(tempUser);
-                    }
-
-                    //Check if the main user in the line has them in their following list
-                    currentUser = users.Where(u => u.Name == nameArray[0]).First();
-
-                    //Console.WriteLine("current user is " + currentUser.Name);
-
-                    //If the list does not exist yet, then create it.
-                    if (currentUser.Following == null)
-                    {
-                        currentUser.Following = new List<string>();
-                    }
-                        if(!currentUser.Following.Contains(userName))
-                    {
-                        //if they don't, then add them to the list
-                        currentUser.Following.Add(userName);
-                        //Console.WriteLine("in if");
-                    }
-                }
+                // Read next line in user file
                 line = sr.ReadLine();
             }
 
-            //close the file
+            // Close the file
             sr.Close();
 
-
+            // Sort the users into alphabetical order
             users.Sort();
 
             return users;
         }
-
-
+        private void AddUser(string Name)
+        {
+            // Check if the user is already in the list of users
+            if (!users.Any(u => u.Name == Name))
+            {
+                // If not, then add them
+                User tempUser = new User();
+                tempUser.Name = Name;
+                users.Add(tempUser);
+            }
+        }
     }
-}
+   }
